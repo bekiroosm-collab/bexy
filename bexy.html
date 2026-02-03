@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEXY | İçimde Kaldın - Official Site</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #050505;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent: #ffffff;
+            --section-spacing: 120px;
+            /* Bölümler arası boşluk */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Noise (Kumlanma) Efekti - Tüm siteye yayılır */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* TİPOGRAFİ */
+        h1,
+        h2,
+        h3 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        /* ORTAK ANIMASYON SINIFLARI (Scroll ile tetiklenecek) */
+        .animate-block {
+            opacity: 0;
+            transform: translateY(50px);
+            /* Aşağıdan başla */
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* Yumuşak geçiş */
+        }
+
+        .animate-block.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Gecikme eklemek için */
+        .delay-200 {
+            transition-delay: 0.2s;
+        }
+
+        .delay-400 {
+            transition-delay: 0.4s;
+        }
+
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 25px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(5, 5, 5, 0.8) 0%, rgba(5, 5, 5, 0) 100%);
+        }
+
+        .logo {
+            font-family: 'Oswald';
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .header-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .header-links a:hover {
+            opacity: 1;
+        }
+
+        /* SECTION 1: HERO (VİTRİN) */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 70%);
+        }
+
+        .hero-content h1 {
+            font-size: 5rem;
+            line-height: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .hero-content h1 span.outline {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+            color: transparent;
+            display: block;
+            font-size: 4rem;
+        }
+
+        /* Kapak Görseli */
+        .hero-cover {
+            width: 320px;
+            height: 320px;
+            margin: 0 auto 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .hero-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.1) grayscale(20%);
+        }
+
+        .btn-group {
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            text-transform: uppercase;
+            font-family: 'Oswald';
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid var(--accent);
+            font-weight: 600;
+        }
+
+        .btn-fill {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .btn-fill:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* SECTION 2: THE MANIFESTO (Hikaye) */
+        .section-manifesto {
+            padding: var(--section-spacing) 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .manifesto-title {
+            flex: 1 1 400px;
+            font-size: 3.5rem;
+            line-height: 1;
+        }
+
+        .manifesto-text {
+            flex: 1 1 400px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+            margin-bottom: 30px;
+        }
+
+        /* SECTION 3: VIDEO PREMIERE (GÜNCEL CSS) */
+        .section-video {
+            padding: var(--section-spacing) 0;
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+            width: 90%;
+            /* Kenarlardan biraz boşluk olsun */
+            max-width: 1200px;
+            /* Çok geniş ekranlarda devasa olmasın */
+            margin: 0 auto;
+            padding-bottom: 56.25%;
+            /* 16:9 Oranı için sihirli kod */
+            height: 0;
+            background: #000;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            /* Videoya gölge katar */
+            border-radius: 12px;
+            /* Köşeleri hafif yuvarlar */
+            overflow: hidden;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* SECTION 4: LYRICS FOCUS (Sözler) */
+        .section-lyrics {
+            padding: var(--section-spacing) 5%;
+            text-align: center;
+            background: linear-gradient(to bottom, #050505, #111111 50%, #050505);
+        }
+
+        .lyrics-box h2 {
+            font-size: 4rem;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .highlight-lyric {
+            font-family: 'Oswald';
+            font-size: 1.5rem;
+            line-height: 1.1;
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(45deg, #fff, #999);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* SECTION 5: GALLERY (Estetik) */
+        .section-gallery {
+            padding: var(--section-spacing) 5%;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .gallery-item {
+            height: 400px;
+            background: #222;
+            overflow: hidden;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+            filter: grayscale(50%);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 80px 5% 150px;
+            /* Alttaki player için ekstra boşluk */
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        .footer-socials a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 15px;
+            font-family: 'Oswald';
+            letter-spacing: 1px;
+        }
+
+        /* STICKY PLAYER (Alt Çubuk) */
+        .sticky-player {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 450px;
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 990;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .player-info {
+            font-size: 0.8rem;
+        }
+
+        .player-info strong {
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .player-actions a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.75rem;
+            margin-left: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+
+        .player-actions a:hover {
+            opacity: 1;
+        }
+
+        /* MOBİL DÜZENLEMELER */
+        @media (max-width: 768px) {
+            .header-links {
+                display: none;
+            }
+
+            /* Mobilde menüyü gizle (basitlik için) */
+            .hero-content h1 {
+                font-size: 3.5rem;
+            }
+
+            .hero-content h1 span.outline {
+                font-size: 2.5rem;
+            }
+
+            .hero-cover {
+                width: 250px;
+                height: 250px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .manifesto-title {
+                font-size: 2.5rem;
+            }
+
+            .video-container {
+                height: 40vh;
+            }
+
+            .highlight-lyric {
+                font-size: 1.5rem;
+            }
+
+            .gallery-item {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="noise-overlay"></div>
+
+    <header>
+        <div class="logo">BEXY</div>
+        <div class="header-links">
+            <a href="#manifesto">Hikaye</a>
+            <a href="#video">Klip</a>
+            <a href="#contact">İletişim</a>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-cover animate-block">
+                <img src="1.png" alt="İçimde Kaldın Kapak">
+            </div>
+
+            <h1 class="animate-block delay-200">
+                <span class="outline">Single</span>
+                İÇİMDE KALDlN.
+            </h1>
+
+            <div class="btn-group animate-block delay-400">
+                <a href="https://open.spotify.com/intl-tr/track/66tsNvc8qllhGgC2uob76C?si=2f52dde3510949c8"
+                    class="btn btn-fill">Hemen Dinle</a>
+                <a href="https://youtu.be/VVX-A0r9MCs?si=0xjnkXImeLrfKUIa" class="btn btn-outline">Klibi İzle</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-manifesto" id="manifesto">
+        <div class="manifesto-title animate-block">
+            <div class="accent-line"></div>
+            SESSIZLIĞIN<br>ÇIĞLIĞI.
+        </div>
+        <div class="manifesto-text animate-block delay-200">
+            <p>"İçimde Kaldın", şehrin gürültüsünde kaybolan ama içimizde yankılanmaya devam eden o cümlelerin bir
+                dışavurumu. Bu sadece bir şarkı değil, karanlıkta parlayan bir itiraf.</p>
+            <br>
+            <p>Melankoli benim silahım, ritimler ise savaş alanım. Bexy'nin dünyasına hoş geldin.</p>
+        </div>
+    </section>
+
+    <section class="section-video animate-block" id="video">
+        <h3 style="margin-bottom: 30px;">OFFICIAL VIDEO PREMIERE</h3>
+
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/VVX-A0r9MCs?rel=0&modestbranding=1" title="Bexy - İçimde Kaldın"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </section>
+
+    <section class="section-lyrics">
+        <div class="lyrics-box animate-block">
+            <h2>SÖZLER</h2>
+            <p class="highlight-lyric">
+                "Aynaya baktım yüzüm bana küstü
+                <br> 
+                Kalbim hep doldu dilim yine sustu
+                <br> 
+                Git dedi aklım ayaklarım durdu
+                <br> 
+                Seni unutmak bana çok zor oldu
+                
+            <br> </br>     
+                Geceler yandı zaman susmmadı
+                <br>
+                İçimde fırtına dinmedi durmadı
+                <br>
+                Herkes geçer dedi hiç biri tutmadı
+                <br>
+                Ben senden sonra kimseyi bulmadım
+                
+            <br> </br>
+                Adını sildim defterimde
+                <br>
+                Kalbin duruyor cümlelerimde
+                <br>
+                Bittin ama sen benim içimde
+                <br>
+                Gitmeyi öğren demediler kimseye
+            <br> </br>
+                Her gülüşün yalan farkındayım
+                <br>
+                Eksik her yanım darmadağın
+                <br>
+                Sende yarımdım sensiz kayıp
+                <br>
+                Kendimi bile tanıyamıyorum artık
+            <br> </br>
+                İçimde kaldın silinmedin
+                <br>
+                Geçti zaman ama sen gelemedin
+                <br>
+                Kimseyi ben yine sevemedim
+                <br>
+                Çünkü herkesi sana benzettim
+            <br> </br>
+                İçimde kaldın adın gibi
+                <br>
+                Susuyorum ama bağırıyor içim
+                <br>
+                Gittin ama bir yanım
+                <br>
+                Hala seni bekliyor geceleri"
+            </p>
+        </div>
+    </section>
+
+    <section class="section-gallery">
+        <h3 class="animate-block">AESTHETICS</h3>
+        <div class="gallery-grid">
+            <div class="gallery-item animate-block"><img
+                    src="BEXY (1).png">
+            </div>
+            <div class="gallery-item animate-block delay-200"><img
+                    src="WhatsApp Image 2026-02-03 at 18.37.27.jpeg">
+            </div>
+            <div class="gallery-item animate-block delay-400"><img
+                    src="WhatsApp Image 2026-02-03 at 18.45.05.jpeg">
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="logo" style="margin-bottom: 30px;">BEXY</div>
+        <div class="footer-socials" style="margin-bottom: 30px;">
+            <a href="https://www.instagram.com/bexymusic0/">INSTAGRAM</a>
+            <a href="https://open.spotify.com/intl-tr/artist/5scqNSn0kToT4XLZbhHLoD?si=_wVx5FUFSBWHob0TahRnVQ">SPOTIFY</a>
+            <a href="https://www.youtube.com/VVX-A0r9MCs&list=RDVVX-A0r9MCs&start_radio=1">YOUTUBE</a>
+        </div>
+        <p>© 2026 Bexy.</p>
+        <p>Management: bexyofficial0@gmail.com</p>
+    </footer>
+
+    <div class="sticky-player">
+        <div class="player-info">
+            <strong>İçimde Kaldın</strong>
+            <span>Bexy</span>
+        </div>
+        <div class="player-actions">
+            <a href="https://open.spotify.com/intl-tr/track/66tsNvc8qllhGgC2uob76C?si=c98021404b674749">Spotify</a>
+            <a href="https://music.apple.com/us/album/i-%C3%A7imde-kald%C4%B1n-single/1873546855">Apple</a>
+        </div>
+    </div>
+
+
+    <script>
+        // Sayfa yüklendiğinde çalışacak script
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // "animate-block" sınıfına sahip tüm öğeleri seç
+            const animatedElements = document.querySelectorAll('.animate-block');
+
+            // IntersectionObserver API'si ile öğelerin ekrana girişini izle
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    // Eğer öğe ekranda görünürse:
+                    if (entry.isIntersecting) {
+                        // "is-visible" sınıfını ekle (CSS geçişini tetikler)
+                        entry.target.classList.add('is-visible');
+                        // Artık izlemeyi bırak (tek seferlik animasyon için)
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.15 // Öğenin %15'i göründüğünde tetikle
+            });
+
+            // Her bir öğeyi izlemeye başla
+            animatedElements.forEach(el => observer.observe(el));
+        });
+    </script>
+
+</body>
+
+</html>
